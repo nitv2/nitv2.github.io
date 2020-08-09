@@ -1,12 +1,61 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
     <title>楽天APIテスト</title>
 </head>
+
 <body>
     <h1>楽天APIテスト</h1>
+    <input type="text" id="search_area">
+    <button type="button" id="search_button">検索</button>
+    <div id="image_unit"></div>
 </body>
+<!-- JQueryインポート -->
+<script src="js/jquery-3.5.1.min.js"></script>
+
+<script>
+
+    $(function () {
+        $('#search_button').on('click', () => {
+
+            // 入力値を格納
+            let keyword = $('#search_area').val();
+            let applicationId = "1073022219916868397";
+            // 楽天商品検索APIのURLを格納
+            let url = "https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706";
+            /* 
+            APIのURLを指定します。リクエストURLの「?」より前
+            jQuery.get( url, map, 通信成功時のcallback )
+            */
+            $.get(url, {
+                applicationId: applicationId,
+                keyword: keyword
+            }, (data) => {
+
+                console.log("データ数は"+ data.length);
+
+                $.each(data.Items, (index, item) => {
+                    let title = item.Name;
+                    let itemUrl = item.Item.url;
+                    let img = item.Item.mediumImageUrls[0].imageUrl;
+
+                    $('<div class="photo"></div>')
+                        // appendchildと同じ意味合い
+                        .append(`<a href="${url}">` + title + `</a>`)
+                        .append('<img src="' + img + '">')
+                        .appendTo('#img_unit');
+
+                });
+            });
+
+        });
+
+    });
+
+</script>
+
 </html>
